@@ -89,15 +89,27 @@ Closing the connection to the Cyclus2 ergometer.
 
 ## Installation
 
-0. You need [Python](http://python.org) on your computer:
-   To install Python, use a method appropriate to your computer and, if applicable, your institutional tools/policies.
-1. Clone or download this project to your computer, e.g.:
+There are two practical ways to get started:
+
+1. Download a ready-to-run executable from the [GitHub Releases page](https://github.com/dhprlab/Cyclus2-PyCmd/releases).
+   No Python installation is required on your computer.
+   Pick the zipped file for your platform (currently Windows or Linux), extract it, and run the program directly.
+
+   > [!NOTE]
+   > On Windows, running the executable may show a security warning.
+   > For example, your antivirus software may flag the executable as from an unknown publisher because they are not signed.
+   >
+   > If you trust the executable, you can click "Run anyway" to continue; the build process is described in [docs/README.md](./docs/README.md#release-versions-and-packaging).
+   > If you prefer not to trust the downloaded file, use the Python-based option instead.
+
+2. Install [Python](http://python.org) using a method that matches your operating system (and institutional) policies).
+   Then clone or download this project to your computer, e.g.:
 
    ```sh
    git clone git@github.com:dhprlab/Cyclus2-PyCmd.git
    ```
 
-On your Cyclus2, all required software should be installed, but it requires some [setup, see next section](#setup).
+On your Cyclus2, all required software should be installed, but some minor [setup](#setup) is required.
 
 ## Setup
 
@@ -125,8 +137,8 @@ This script gets tested on Ubuntu 24.04 LTS with Python 3.12 and on Windows 11 w
 
 ## Release versions and packaging
 
-The project offers releases with clear version numbers, including executables that do not require Python to be installed on the computer.
-The executables are built in a GitHub workflow and can be downloaded from the release page of this project.
+The project offers releases with clear version numbers, including zipped executables that do not require Python to be installed on the computer.
+The release assets are built in a GitHub workflow and can be downloaded from the [GitHub Releases page](https://github.com/dhprlab/Cyclus2-PyCmd/releases); they can be extracted and run directly without any local Python setup.
 
 For more details, please see [docs/README.md](./docs/README.md#release-versions-and-packaging).
 

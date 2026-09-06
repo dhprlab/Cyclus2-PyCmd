@@ -16,8 +16,11 @@ The executable files are built using [PyInstaller](https://pyinstaller.org/).
 
 PyInstaller is used inside a GitHub workflow, and the resulting artifacts are uploaded to the release page of this project.
 The GitHub workflow in [../.github/workflows/pyinstaller.yml](../.github/workflows/pyinstaller.yml) runs on a Git release tag and creates one build per platform.
-The resulting artifact names include the version number, for example `Cyclus2-PyCmd-0.1.1-Windows`.
 Users can download the artifact from this project's release page.
+
+> [!NOTE]
+> The PyInstaller builds are not signed, so Windows may warn about the unknown publisher.
+> If you don't trust the executables, you can install Python and run the script directly instead.
 
 ### Release process
 

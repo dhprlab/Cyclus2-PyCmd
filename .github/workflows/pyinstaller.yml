@@ -98,17 +98,21 @@ jobs:
         run: |
           set -euo pipefail
           echo "Build jobs have uploaded their binaries as artifacts."
-          echo "Now download and publish them as the tag release assets."
-          mkdir -p release-assets-final
+          echo "We now bundle them into versioned zip archives for a cleaner release download."
+          mkdir -p release-assets-final release-assets-staging
 
           find release-assets -type f -print0 | while IFS= read -r -d '' file; do
             if [[ "$file" == *.exe ]]; then
-              cp "$file" "release-assets-final/Cyclus2-PyCmd-${GITHUB_REF_NAME}-windows.exe"
+              cp "$file" "release-assets-staging/Cyclus2-PyCmd.exe"
+              zip -j "release-assets-final/Cyclus2-PyCmd-${GITHUB_REF_NAME}-windows.zip" "release-assets-staging/Cyclus2-PyCmd.exe"
             else
-              cp "$file" "release-assets-final/Cyclus2-PyCmd-${GITHUB_REF_NAME}-linux"
+              cp "$file" "release-assets-staging/Cyclus2-PyCmd"
+              chmod +x "release-assets-staging/Cyclus2-PyCmd"
+              zip -j "release-assets-final/Cyclus2-PyCmd-${GITHUB_REF_NAME}-linux.zip" "release-assets-staging/Cyclus2-PyCmd"
             fi
           done
 
+          rm -rf release-assets-staging
           echo "Prepared files:"
           ls -l release-assets-final
 
