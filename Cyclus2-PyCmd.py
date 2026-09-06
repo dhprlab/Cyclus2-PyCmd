@@ -264,11 +264,10 @@ def main():
     PORT = 25000  # default port 25000 on the Cyclus2 Ethernet/TCP interface  
     TIMEOUT_SOCKET = 2  # socket timeout in seconds for send/receive operations
 
-    print(f"Cyclus2-PyCmd version {VERSION}")
     print("Welcome to\n" +
           " ▄▖    ▜     ▄▖  ▄▖  ▄▖    ▌\n"
           " ▌ ▌▌▛▘▐ ▌▌▛▘▄▌▄▖▙▌▌▌▌ ▛▛▌▛▌\n" +
-          " ▙▖▙▌▙▖▐▖▙▌▄▌▙▖  ▌ ▙▌▙▖▌▌▌▙▌\n" +
+          " ▙▖▙▌▙▖▐▖▙▌▄▌▙▖  ▌ ▙▌▙▖▌▌▌▙▌, " + f"version {VERSION}\n" +
           "   ▄▌              ▄▌       ")
     print(f"Trying to connect to {addr}:{PORT} ... ", end="", flush=True)
 

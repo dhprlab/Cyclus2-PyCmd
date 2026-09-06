@@ -38,7 +38,7 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Validate release tag
         if: startsWith(github.ref, 'refs/tags/')
@@ -58,7 +58,7 @@ jobs:
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: '3.12'
 
@@ -71,7 +71,7 @@ jobs:
         run: python -m PyInstaller Cyclus2-PyCmd.spec
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: Cyclus2-PyCmd-${{ steps.version.outputs.version }}-${{ runner.os }}
           path: dist/**
@@ -87,7 +87,7 @@ jobs:
       # built executables as workflow artifacts.
       # Those artifacts are then downloaded and attached together for a single release.
       - name: Download build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: release-assets
           pattern: Cyclus2-PyCmd-*
