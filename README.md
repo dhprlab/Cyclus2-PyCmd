@@ -28,11 +28,10 @@ _Cyclus2-PyCmd_ aims to create a convenient way to interact with a Cyclus2 ergom
 ## Usage
 
 Using _Cyclus2-PyCmd_ requires [installation](#installation) and a [connection setup](#connection-setup), see sections below.
-Once installed, the command-line interface is the same in both cases.
 Assuming the Cyclus2 ergometer has the IP address `192.168.1.200`, you can start the program as follows:
 
-- From source: `python Cyclus2-PyCmd.py --address 192.168.1.200`
-- From a downloaded executable:
+- Installation from source: `python Cyclus2-PyCmd.py --address 192.168.1.200`
+- Installation from a downloaded executable:
   - On Linux: `./Cyclus2-PyCmd --address 192.168.1.200`
   - On Windows: `Cyclus2-PyCmd.exe --address 192.168.1.200`
     (On Windows, you can also double-click the executable to start it; if no IP address is supplied, the program will ask for it.)
