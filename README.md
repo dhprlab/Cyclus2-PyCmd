@@ -42,7 +42,7 @@ In addition, you can use the following PyCmd helper commands:
 - `HELP` shows the list of available commands.
 - `HELP <command>` shows the reference for a specific command.
   For example, `HELP os` shows the reference for command `os`.
-- `DISCONNECT` closes the connection to the Cyclus2 ergometer.
+- `QUIT` closes the connection to the Cyclus2 ergometer.
 
 The command reference is also available without starting a session, for example:
 
