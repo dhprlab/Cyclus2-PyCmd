@@ -3,9 +3,9 @@ SPDX-FileCopyrightText: Johannes Keyser <johannes.keyser@uni-hamburg.de>
 SPDX-License-Identifier: EUPL-1.2
 -->
 
-# Cyclus2-PyCmd
+# Cyclus2-PyCmd 🧑‍💻 ⇄ 🚲
 
-🧑‍💻 ⇄ 🚲 Interactively send commands to [Cyclus2 ergometers](https://www.cyclus2.com/en/).
+Interactively send commands to [Cyclus2 ergometers](https://www.cyclus2.com/en/).
 
 ![logo](./materials/logo-Cyclus2-PyCmd.svg)
 
@@ -63,10 +63,11 @@ Welcome to
   / ___/_ ______/ /_ _____ |_  |___/ _ \__ __/ ___/_ _  ___/ /
  / /__/ // / __/ / // (_-</ __/___/ ___/ // / /__/  ' \/ _  /
  \___/\_, /\__/_/\_,_/___/____/  /_/   \_, /\___/_/_/_/\_,_/
-     /___/                            /___/     version 1.0.0
+     /___/                            /___/     version 1.1.0
 
 Type any Cyclus2 command or use HELP [command] for command reference.
-To end the session, type DISCONNECT to disconnect from the Cyclus2.
+Press Tab to 'cycle through' or complete half-typed commands.
+To end the session, type QUIT to disconnect from the Cyclus2.
 
 Command> vers?
 Cyclus2> vers:Cyclus2, Version 5.0.9083.30724
@@ -77,8 +78,8 @@ Cyclus2> data:0,0,0.00,0.00,0.00,0.00,0.00,0.00,8.61,0.00,0.00,0.00,0.00
 Command> something-wrong
 Cyclus2> error:unknown command
 
-Command> DISCONNECT
-Disconnecting and ending the session. Bye.
+Command> QUIT
+Disconnecting and quitting the session. Bye.
 ```
 
 > [!NOTE]
@@ -187,6 +188,6 @@ See English license text in [LICENSES/CC0-1.0.txt](./LICENSES/CC0-1.0.txt); for 
 
 ## Project status
 
-Experimental:
-This project is currently being prototyped as a lightweight experimental tool for interactive protocol exploration, not as a general-purpose end-user product.
-For now, expect breaking changes in each revision.
+The paint is still fresh, but the main functions should be usable.
+If need be, there still will be breaking changes, but hopefully nothing major.
+

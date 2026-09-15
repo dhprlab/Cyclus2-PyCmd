@@ -22,9 +22,12 @@ import yaml
 from prompt_toolkit.application import Application
 from prompt_toolkit.document import Document
 from prompt_toolkit.key_binding import KeyBindings
-from prompt_toolkit.layout.containers import HSplit, Window
+from prompt_toolkit.layout.containers import HSplit, Window, Float, FloatContainer
 from prompt_toolkit.layout.layout import Layout
-from prompt_toolkit.widgets import TextArea
+from prompt_toolkit.widgets import TextArea, Dialog
+from prompt_toolkit.layout.dimension import Dimension
+from prompt_toolkit.completion import Completer, Completion
+from prompt_toolkit.layout.controls import FormattedTextControl
 
 
 
@@ -201,8 +204,11 @@ def local_reply_for(command_catalog: dict, text: str):
 
 
 
-def recv_stream(sock, timeout=2.0, chunk_size=1024):
-    """Read until the socket becomes idle for a short moment."""
+def receive_stream(sock, timeout=2.0, chunk_size=1024):
+    """
+    Read until the socket becomes idle for a short moment.
+    
+    """
     sock.settimeout(timeout)
     chunks = []
     deadline = time.monotonic() + timeout
@@ -245,8 +251,8 @@ class Cyclus2Session:
     send_line() sends a message to the Cyclus2; any text the Cyclus2 replies
     is delivered to a callback as soon as it arrives, whenever that is.
     A background thread does the actual socket reading, because the Cyclus2 does
-    not always wait to be asked: For example, after command `data=7`,
-    it keeps streaming data on its own.
+    not always wait to be asked: For example, after command data=7,
+    it keeps streaming data until command data=0.
     """
 
     def __init__(self, host: str, port: int, timeout: float = 2.0):
@@ -264,7 +270,7 @@ class Cyclus2Session:
     def _read_loop(self):
         while self._running:
             try:
-                chunk = recv_stream(self.sock, timeout=self.timeout)
+                chunk = receive_stream(self.sock, timeout=self.timeout)
             except OSError:
                 break  # the socket was closed, e.g. via close() below.
 
@@ -285,35 +291,64 @@ class Cyclus2Session:
         self.sock.close()
 
 
+class Cyclus2Completer(Completer):
+    """Create a completer for the Cyclus2 commands."""
+    def __init__(self, command_catalog: dict):
+        self.command_catalog = command_catalog
+
+    def get_completions(self, document, complete_event):
+        text = document.text_before_cursor
+
+        # Complete HELP commands with the command reference.
+        if text.upper().startswith("HELP "):
+            prefix = text[5:].strip().lower()
+            for name in sorted(self.command_catalog):
+                if name.lower().startswith(prefix):
+                    yield Completion(name, start_position=-len(prefix))
+            return
+
+        # Complete command names at the start of the line.
+        prefix = text.strip().lower()
+        for name in sorted(self.command_catalog):
+            if name.lower().startswith(prefix):
+                yield Completion(name, start_position=-len(prefix))
+
+
 class ChatSession:
     """
     Runs the interactive chat: Everything the user sends and everything the
     Cyclus2 replies appears in the same scrolling transcript, with a single input
-    line always available below it. The layout is directly adapted from
-    prompt_toolkit's example calculator.py ("inspiration for a REPL"):
-    A scrollable TextArea for the transcript, a one-line input TextArea below that,
-    and a static horizontal line in between that visually separates the two,
-    as part of the fixed screen layout.
+    line always available below it.
+    HELP commands trigger a popup dialog to get out of the way of the chat log.
+    Tab lets user complete the Cyclus2 commands from the reference.
     """
 
     def __init__(self, session: Cyclus2Session, command_catalog: dict):
         self.session = session
         self.command_catalog = command_catalog
+        c2completer = Cyclus2Completer(command_catalog)
+        self._active_popup = None
         session.set_message_handler(self._on_device_message)
 
         intro = (ASCII_BANNER + "\n" +
-                 "Type any Cyclus2 command or use HELP [command] for command reference.\n"
-                 "To end the session, type DISCONNECT to disconnect from the Cyclus2.\n")
-        self.log_area = TextArea(text=intro, read_only=True, wrap_lines=True, scrollbar=True)
-        input_area = TextArea(height=1, prompt="Command> ", multiline=False, wrap_lines=False)
-        input_area.accept_handler = self._on_submit
+                "Type any Cyclus2 command or use HELP [command] for command reference.\n" +
+                "Press Tab to 'cycle through' or complete half-typed commands.\n"
+                "To end the session, type QUIT to disconnect from the Cyclus2.\n")
+        self.chatlog_area = TextArea(text=intro, read_only=True,
+                                     wrap_lines=True, scrollbar=True)
+        self.input_area = TextArea(height=1, prompt="Command> ", multiline=False,
+                                   wrap_lines=False, style="bg:darkgreen",
+                                   completer=c2completer)
+        self.input_area.accept_handler = self._on_submit
 
-        layout = Layout(
-            HSplit([self.log_area,
-                    Window(height=1, char="─"),  # static separator, fixed in the layout
-                    input_area]),
-            focused_element=input_area,
-        )
+        self.root_container = FloatContainer(
+            content=HSplit([self.chatlog_area,
+                            Window(height=1, char="─"),
+                            self.input_area]),
+            floats=[])
+
+        layout = Layout(self.root_container,
+                        focused_element=self.input_area)
 
         bindings = KeyBindings()
 
@@ -322,43 +357,103 @@ class ChatSession:
             self.session.close()
             event.app.exit()
 
-        self.app = Application(layout=layout, key_bindings=bindings, full_screen=True)
+        def _dismiss_if_popup(event):
+            if self._active_popup is not None:
+                self._close_popup()
+                event.app.invalidate()
+
+        bindings.add("c-g")(_dismiss_if_popup)
+        bindings.add("escape")(_dismiss_if_popup)
+
+        self.app = Application(layout=layout, key_bindings=bindings, full_screen=True,
+                               mouse_support=True)
 
     def _append(self, line: str):
-        # Keep the cursor at the end so the log area auto-scrolls down to the
-        # newest line whenever it grows beyond the visible height.
-        # NOTE: log_area is read_only, so writing its document needs
-        # bypass_readonly=True; otherwise this silently raises
-        # EditReadOnlyBuffer (caught by prompt_toolkit without a stack trace)
-        # and neither the log update nor whatever runs after it takes effect.
-        new_text = self.log_area.text + line + "\n"
-        self.log_area.buffer.set_document(
+        new_text = self.chatlog_area.text + line + "\n"
+        self.chatlog_area.buffer.set_document(
             Document(new_text, cursor_position=len(new_text)),
             bypass_readonly=True)
+
+    def _close_popup(self):
+        if self._active_popup is not None:
+            try:
+                self.root_container.floats.remove(self._active_popup)
+            except ValueError:
+                pass
+            self._active_popup = None
+
+        # restore focus to input area, otherwise typing doesn't work
+        self.app.layout.focus(self.input_area)
+        self.app.invalidate()
+
+
+    def _show_popup(self, title: str, text: str):
+
+        help_area = TextArea(
+            text=text,
+            read_only=True,
+            wrap_lines=True,
+            scrollbar=True,
+            height=Dimension(min=10, max=20))
+
+        tip_area = Window(
+            height=1,
+            content=FormattedTextControl(
+                [("fg:ansicyan italic",
+                  "Press Esc or Ctrl-G to close this help window.")]),
+            dont_extend_height=True,
+            always_hide_cursor=True)
+
+        body = HSplit([help_area, Window(height=1, char="─"), tip_area])
+
+        dialog = Dialog(
+            title=title,
+            body=body,
+            buttons=[],
+            width=Dimension(preferred=80),
+            modal=False)
+
+        self._active_popup = Float(content=dialog)
+        self.root_container.floats.append(self._active_popup)
+        self.app.layout.focus(help_area)
+        self.app.invalidate()
 
     def _on_submit(self, buffer):
         text = buffer.text.strip()
         if not text:
             return
 
-        self._append(f"\nCommand> {text}")
+        # Don't add HELP commands in the chat transcript.
+        if not text.startswith("HELP"):
+            # If a popup is open, close it as soon as the user continues normally
+            if self._active_popup is not None:
+                self._close_popup()
+            self._append(f"\nCommand> {text}")
 
-        if text == "DISCONNECT":
+        if text == "QUIT":
             self._append("Disconnecting and ending the session. Bye.")
             self.session.close()
             self.app.exit()
             return
 
-        local_reply = local_reply_for(self.command_catalog, text)
-        if local_reply is not None:
-            self._append(local_reply)
+        if text == "HELP":
+            self._show_popup(
+                "Available commands",
+                list_command_names(self.command_catalog))
+            return
+
+        if text.startswith("HELP "):
+            cmd = text[5:].strip()
+            self._show_popup(
+                f"Help: {cmd}",
+                format_command_help(self.command_catalog, cmd))
             return
 
         self.session.send_line(text)
 
     def _on_device_message(self, text: str):
         self._append(f"Cyclus2> {text}")
-        self.app.invalidate()  # invalidate() is documented as thread-safe.
+        self.app.invalidate()
 
     def run(self):
         self.app.run()
