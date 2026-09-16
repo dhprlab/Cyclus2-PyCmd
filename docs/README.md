@@ -13,6 +13,19 @@ For examples how to chain them together into useful workflows, see [Examples.md]
 
 This section collects information useful for developing and releasing _Cyclus2-PyCmd_ itself, as opposed to just using it.
 
+### Code style
+
+[![Code style: black](/media/logo-black.svg)](https://black.readthedocs.io/en/stable/)
+
+This project uses [_Black_ to format Python code](https://black.readthedocs.io/en/stable/), to avoid fussing about formatting 😎.
+To use _Black_, [install it](https://black.readthedocs.io/en/stable/getting_started.html#installation) (e.g., `pip install black`) and then before your `git commit`, run against the entire project folder:
+
+```sh
+black Cyclus2-PyCmd
+```
+
+You should see something like "All done! ✨ 🍰 ✨"
+
 ### Testing without real hardware
 
 Folder [/tools](/tools) holds developer scripts that are not part of the shipped app.

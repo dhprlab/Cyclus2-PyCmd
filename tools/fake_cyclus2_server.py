@@ -167,14 +167,18 @@ def main():
         server_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server_sock.bind((args.host, args.port))
         server_sock.listen()
-        print(f"Fake Cyclus2 server listening on {args.host}:{args.port}. Press Ctrl+C to stop.")
+        print(
+            f"Fake Cyclus2 server listening on {args.host}:{args.port}. Press Ctrl+C to stop."
+        )
 
         try:
             while True:
                 conn, addr = server_sock.accept()
                 # One client at a time is enough for manual/automated testing,
                 # but a thread per connection keeps this robust and simple.
-                threading.Thread(target=handle_client, args=(conn, addr), daemon=True).start()
+                threading.Thread(
+                    target=handle_client, args=(conn, addr), daemon=True
+                ).start()
         except KeyboardInterrupt:
             print("\nStopping fake Cyclus2 server.")
 

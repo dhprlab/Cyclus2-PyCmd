@@ -30,11 +30,10 @@ from prompt_toolkit.completion import Completer, Completion
 from prompt_toolkit.layout.controls import FormattedTextControl
 
 
-
 def read_version() -> str:
     """Read the project version from the bundled VERSION file."""
     # NOTE: In a download/checkout, the VERSION file sits next to the script.
-    #       This assumes PyInstaller handles this well in its file bundling. 
+    #       This assumes PyInstaller handles this well in its file bundling.
     base_dir = Path(__file__).resolve().parent
     return (base_dir / "VERSION").read_text(encoding="utf-8").strip()
 
@@ -44,12 +43,13 @@ DEFAULT_ADDRESS = "192.168.1.200"  # a local address as default/example
 
 # Write "Cyclus2-PyCmd" in ASCII art font "Small Slant"; yes, that is important.
 ASCII_BANNER = (
- "Welcome to\n" + \
- "   _____         __         ___     ___       _____         __\n" +
- "  / ___/_ ______/ /_ _____ |_  |___/ _ \\__ __/ ___/_ _  ___/ /\n" +
- " / /__/ // / __/ / // (_-</ __/___/ ___/ // / /__/  ' \\/ _  /\n" +
- " \\___/\\_, /\\__/_/\\_,_/___/____/  /_/   \\_, /\\___/_/_/_/\\_,_/\n" +
-f"     /___/                            /___/     version {VERSION}\n")
+    "Welcome to\n"
+    + "   _____         __         ___     ___       _____         __\n"
+    + "  / ___/_ ______/ /_ _____ |_  |___/ _ \\__ __/ ___/_ _  ___/ /\n"
+    + " / /__/ // / __/ / // (_-</ __/___/ ___/ // / /__/  ' \\/ _  /\n"
+    + " \\___/\\_, /\\__/_/\\_,_/___/____/  /_/   \\_, /\\___/_/_/_/\\_,_/\n"
+    + f"     /___/                            /___/     version {VERSION}\n"
+)
 
 # Cyclus2 uses ASCII commands and a CRLF terminator on requests.
 # Responses are plain ASCII and end with CR, with no trailing LF.
@@ -133,15 +133,17 @@ def load_command_reference() -> dict:
                 summary = path.stem
 
             category = "ergoline" if path.parent.name == "ergoline" else "cyclus2"
-            catalog[name] = {"name": name,
-                             "summary": summary,
-                             "body": body,
-                             "category": category}
+            catalog[name] = {
+                "name": name,
+                "summary": summary,
+                "body": body,
+                "category": category,
+            }
 
     return catalog
 
 
-def list_command_names(command_catalog : dict) -> str:
+def list_command_names(command_catalog: dict) -> str:
     """
     List the available commands in the catalog, grouped by category.
     """
@@ -151,8 +153,10 @@ def list_command_names(command_catalog : dict) -> str:
         groups.setdefault(category, []).append(name)
 
     sections = []
-    for category_name, heading in (("cyclus2", "Cyclus2 native commands:"),
-                                   ("ergoline", "Ergoline-compatible commands:")):
+    for category_name, heading in (
+        ("cyclus2", "Cyclus2 native commands:"),
+        ("ergoline", "Ergoline-compatible commands:"),
+    ):
         names = groups.get(category_name, [])
         if not names:
             continue
@@ -170,7 +174,7 @@ def list_command_names(command_catalog : dict) -> str:
     return "\n\n".join(sections)
 
 
-def format_command_help(command_catalog : dict, command_name: str) -> str:
+def format_command_help(command_catalog: dict, command_name: str) -> str:
     """
     Format the reference text for a specific command,
     or the list of available commands if the command is not found.
@@ -199,15 +203,14 @@ def local_reply_for(command_catalog: dict, text: str):
     if text == "HELP":
         return list_command_names(command_catalog)
     if text.startswith("HELP "):
-        return format_command_help(command_catalog, text[len("HELP "):].strip())
+        return format_command_help(command_catalog, text[len("HELP ") :].strip())
     return None
-
 
 
 def receive_stream(sock, timeout=2.0, chunk_size=1024):
     """
     Read until the socket becomes idle for a short moment.
-    
+
     """
     sock.settimeout(timeout)
     chunks = []
@@ -293,6 +296,7 @@ class Cyclus2Session:
 
 class Cyclus2Completer(Completer):
     """Create a completer for the Cyclus2 commands."""
+
     def __init__(self, command_catalog: dict):
         self.command_catalog = command_catalog
 
@@ -330,25 +334,34 @@ class ChatSession:
         self._active_popup = None
         session.set_message_handler(self._on_device_message)
 
-        intro = (ASCII_BANNER + "\n" +
-                "Type any Cyclus2 command or use HELP [command] for command reference.\n" +
-                "Press Tab to 'cycle through' or complete half-typed commands.\n"
-                "To end the session, type QUIT to disconnect from the Cyclus2.\n")
-        self.chatlog_area = TextArea(text=intro, read_only=True,
-                                     wrap_lines=True, scrollbar=True)
-        self.input_area = TextArea(height=1, prompt="Command> ", multiline=False,
-                                   wrap_lines=False, style="bg:darkgreen",
-                                   completer=c2completer)
+        intro = (
+            ASCII_BANNER
+            + "\n"
+            + "Type any Cyclus2 command or use HELP [command] for command reference.\n"
+            + "Press Tab to 'cycle through' or complete half-typed commands.\n"
+            "To end the session, type QUIT to disconnect from the Cyclus2.\n"
+        )
+        self.chatlog_area = TextArea(
+            text=intro, read_only=True, wrap_lines=True, scrollbar=True
+        )
+        self.input_area = TextArea(
+            height=1,
+            prompt="Command> ",
+            multiline=False,
+            wrap_lines=False,
+            style="bg:darkgreen",
+            completer=c2completer,
+        )
         self.input_area.accept_handler = self._on_submit
 
         self.root_container = FloatContainer(
-            content=HSplit([self.chatlog_area,
-                            Window(height=1, char="─"),
-                            self.input_area]),
-            floats=[])
+            content=HSplit(
+                [self.chatlog_area, Window(height=1, char="─"), self.input_area]
+            ),
+            floats=[],
+        )
 
-        layout = Layout(self.root_container,
-                        focused_element=self.input_area)
+        layout = Layout(self.root_container, focused_element=self.input_area)
 
         bindings = KeyBindings()
 
@@ -365,14 +378,15 @@ class ChatSession:
         bindings.add("c-g")(_dismiss_if_popup)
         bindings.add("escape")(_dismiss_if_popup)
 
-        self.app = Application(layout=layout, key_bindings=bindings, full_screen=True,
-                               mouse_support=True)
+        self.app = Application(
+            layout=layout, key_bindings=bindings, full_screen=True, mouse_support=True
+        )
 
     def _append(self, line: str):
         new_text = self.chatlog_area.text + line + "\n"
         self.chatlog_area.buffer.set_document(
-            Document(new_text, cursor_position=len(new_text)),
-            bypass_readonly=True)
+            Document(new_text, cursor_position=len(new_text)), bypass_readonly=True
+        )
 
     def _close_popup(self):
         if self._active_popup is not None:
@@ -386,7 +400,6 @@ class ChatSession:
         self.app.layout.focus(self.input_area)
         self.app.invalidate()
 
-
     def _show_popup(self, title: str, text: str):
 
         help_area = TextArea(
@@ -394,15 +407,22 @@ class ChatSession:
             read_only=True,
             wrap_lines=True,
             scrollbar=True,
-            height=Dimension(min=10, max=20))
+            height=Dimension(min=10, max=20),
+        )
 
         tip_area = Window(
             height=1,
             content=FormattedTextControl(
-                [("fg:ansicyan italic",
-                  "Press Esc or Ctrl-G to close this help window.")]),
+                [
+                    (
+                        "fg:ansicyan italic",
+                        "Press Esc or Ctrl-G to close this help window.",
+                    )
+                ]
+            ),
             dont_extend_height=True,
-            always_hide_cursor=True)
+            always_hide_cursor=True,
+        )
 
         body = HSplit([help_area, Window(height=1, char="─"), tip_area])
 
@@ -411,7 +431,8 @@ class ChatSession:
             body=body,
             buttons=[],
             width=Dimension(preferred=80),
-            modal=False)
+            modal=False,
+        )
 
         self._active_popup = Float(content=dialog)
         self.root_container.floats.append(self._active_popup)
@@ -438,15 +459,15 @@ class ChatSession:
 
         if text == "HELP":
             self._show_popup(
-                "Available commands",
-                list_command_names(self.command_catalog))
+                "Available commands", list_command_names(self.command_catalog)
+            )
             return
 
         if text.startswith("HELP "):
             cmd = text[5:].strip()
             self._show_popup(
-                f"Help: {cmd}",
-                format_command_help(self.command_catalog, cmd))
+                f"Help: {cmd}", format_command_help(self.command_catalog, cmd)
+            )
             return
 
         self.session.send_line(text)
@@ -506,7 +527,9 @@ def main():
         # For example, double-clicking the Windows executable will leave address unset.
         try:
             if sys.stdin.isatty():
-                entered = input(f"Enter your Cyclus2 IP address [default is {DEFAULT_ADDRESS}]: ").strip()
+                entered = input(
+                    f"Enter your Cyclus2 IP address [default is {DEFAULT_ADDRESS}]: "
+                ).strip()
                 addr = entered or DEFAULT_ADDRESS
             else:
                 addr = DEFAULT_ADDRESS
@@ -516,7 +539,7 @@ def main():
         except EOFError:
             addr = DEFAULT_ADDRESS
 
-    PORT = 25000  # default port 25000 on the Cyclus2 Ethernet/TCP interface  
+    PORT = 25000  # default port 25000 on the Cyclus2 Ethernet/TCP interface
     TIMEOUT_SOCKET = 2  # socket timeout in seconds for send/receive operations
 
     print(f"Trying to connect to {addr}:{PORT} ... ", end="", flush=True)
@@ -525,8 +548,11 @@ def main():
         session = Cyclus2Session(addr, PORT, timeout=TIMEOUT_SOCKET)
     except OSError as exc:
         print("connection failed :(.")  # complete above message "Trying to connect..."
-        print("Please check the address; is the Cyclus2 reachable on the network?\n" +
-              f"Connection error details: {exc}", file=sys.stderr)
+        print(
+            "Please check the address; is the Cyclus2 reachable on the network?\n"
+            + f"Connection error details: {exc}",
+            file=sys.stderr,
+        )
         sys.exit(1)
 
     print("connection success :).")
@@ -536,10 +562,12 @@ def main():
     except KeyboardInterrupt:
         print("\nReceived keyboard interrupt; disconnecting.")
     except Exception as exc:
-        print(f"ERROR: {exc}\n" +
-              "Something went wrong with the script, see error above.\n" +
-              "Ending the script now; try to restart it and/or report the error.",
-              file=sys.stderr)
+        print(
+            f"ERROR: {exc}\n"
+            + "Something went wrong with the script, see error above.\n"
+            + "Ending the script now; try to restart it and/or report the error.",
+            file=sys.stderr,
+        )
         sys.exit(1)
     finally:
         session.close()
