@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="104"
+   height="20"
+   role="img"
+   aria-label="code style: black"
+   version="1.1"
+   id="svg45"
+   sodipodi:docname="logo-black.svg"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs49" />
+  <sodipodi:namedview
+     id="namedview47"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     showgrid="false"
+     inkscape:zoom="3.2050664"
+     inkscape:cx="89.077719"
+     inkscape:cy="25.272488"
+     inkscape:window-width="1251"
+     inkscape:window-height="1161"
+     inkscape:window-x="665"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg45" />
+  <title
+     id="title2">code style: black</title>
+  <filter
+     id="blur"
+     x="-0.13729609"
+     y="-0.4510651"
+     width="1.2745922"
+     height="1.9021302">
+    <feGaussianBlur
+       stdDeviation="16"
+       id="feGaussianBlur4" />
+  </filter>
+  <linearGradient
+     id="s"
+     x2="0"
+     y2="100%">
+    <stop
+       offset="0"
+       stop-color="#bbb"
+       stop-opacity=".1"
+       id="stop7" />
+    <stop
+       offset="1"
+       stop-opacity=".1"
+       id="stop9" />
+  </linearGradient>
+  <clipPath
+     id="r">
+    <rect
+       width="104"
+       height="20"
+       rx="3"
+       id="rect12" />
+  </clipPath>
+  <g
+     clip-path="url(#r)"
+     id="g21">
+    <rect
+       width="65"
+       height="20"
+       fill="#555"
+       id="rect15" />
+    <rect
+       x="65"
+       width="39"
+       height="20"
+       fill="#000000"
+       id="rect17" />
+    <rect
+       width="104"
+       height="20"
+       fill="url(#s)"
+       id="rect19" />
+  </g>
+  <g
+     fill="#fff"
+     text-anchor="middle"
+     font-family="Verdana,Geneva,DejaVu Sans,sans-serif"
+     text-rendering="geometricPrecision"
+     font-size="110"
+     id="g43">
+    <g
+       transform="scale(.1)"
+       id="g31">
+      <g
+         aria-hidden="true"
+         fill="#010101"
+         id="g27">
+        <text
+           x="335"
+           y="150"
+           fill-opacity=".8"
+           filter="url(#blur)"
+           textLength="550"
+           id="text23">code style</text>
+        <text
+           x="335"
+           y="150"
+           fill-opacity=".3"
+           textLength="550"
+           id="text25">code style</text>
+      </g>
+      <text
+         x="335"
+         y="140"
+         textLength="550"
+         id="text29">code style</text>
+    </g>
+    <g
+       transform="scale(.1)"
+       id="g41">
+      <g
+         aria-hidden="true"
+         fill="#010101"
+         id="g37">
+        <text
+           x="835"
+           y="150"
+           fill-opacity=".8"
+           filter="url(#blur)"
+           textLength="290"
+           id="text33">black</text>
+        <text
+           x="835"
+           y="150"
+           fill-opacity=".3"
+           textLength="290"
+           id="text35">black</text>
+      </g>
+      <text
+         x="835"
+         y="140"
+         textLength="290"
+         id="text39">black</text>
+    </g>
+  </g>
+  <metadata
+     id="metadata278">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>code style: black</dc:title>
+        <cc:license
+           rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

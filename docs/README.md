@@ -15,7 +15,7 @@ This section collects information useful for developing and releasing _Cyclus2-P
 
 ### Code style
 
-[![Code style: black](/media/logo-black.svg)](https://black.readthedocs.io/en/stable/)
+[![Code style: black](/materials/logo-black.svg)](https://black.readthedocs.io/en/stable/)
 
 This project uses [_Black_ to format Python code](https://black.readthedocs.io/en/stable/), to avoid fussing about formatting 😎.
 To use _Black_, [install it](https://black.readthedocs.io/en/stable/getting_started.html#installation) (e.g., `pip install black`) and then before your `git commit`, run against the entire project folder:
